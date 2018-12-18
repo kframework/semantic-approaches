@@ -1,0 +1,2 @@
+ocamlopt -o main bigstep.ml main.ml
+rm *.cmi *.o *.cmx
