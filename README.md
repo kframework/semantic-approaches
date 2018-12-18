@@ -65,7 +65,7 @@ The following is a list of students who participate in the project. If you are t
 
 * Armrin: big-step in Racket.
 * Binzhe: TBD in Python.
-* Nick: TBC in Haskell.
+* Nick: TBD in Haskell.
 * Siwakorn: small-step in Racket.
 * Xiaohong: big-step in OCaml.
 
