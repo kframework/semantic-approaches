@@ -15,7 +15,7 @@ This directory contains implementations of IMP, with 5 features added individual
 In each folder there are certain files:
 * `Imp_State.hs` 		defines convenience functions for a state, or a key value mapping.
 * `Imp_Buffer.hs` 	(in 2 and 6) defines convenience functions for a buffer, or a list.
-* `Program.hs` 		contains test programs.
+* `Programs.hs` 		contains test programs.
 * `Parser.hs` 		defines a parser that can parse the defined language.
 * `Main.hs` 			loads the test programs, parses them, runs them, and prints the resulting configuration.
 * `Imp_Syntax.hs` 	defines the syntax of programs, which is the end result of parsing and used to execute the program.
