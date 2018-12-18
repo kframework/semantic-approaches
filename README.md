@@ -68,5 +68,6 @@ The following is a list of students who participate in the project. If you are t
 * Nick: both in Haskell.
 * Siwakorn: small-step in Racket.
 * Xiaohong: big-step in OCaml.
+* Dan: big-step in Haskell.
 
 Please put your code in folders. Every implementation language should have its own folder. 
