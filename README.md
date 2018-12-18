@@ -70,4 +70,5 @@ The following is a list of students who participate in the project. If you are t
 * Xiaohong: big-step in OCaml.
 * Dan: big-step in Haskell.
 
-Please put your code in folders. Every implementation language should have its own folder. 
+Please put your code in a folder structure like `<IL>/<CL>/<part#-part descriptor>/<semantic#-CL-semantic name>/` where IL is the implementation language (e.g. haskell) and CL is the created language (i.e. imp or lambda).  This is the same format as the Maude homeworks from class.
+For example, the code for implementing IMP++ in Haskell using big-step semantics would be found under `haskell/imp/6-imp++/1-imp-bigstep/`.
