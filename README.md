@@ -49,7 +49,7 @@ This project offers a comprehensive survey on the 10 most common-used approaches
 
 * Tests are very important. We will provide a comprehensive set of programs that test every corner cases of the semantics.
 * Syntax of the languages are very important. We will provide it for every language construct.
-* Nondeterminism behavior is very important. The ability to search for all possible execution results is required. For some semantic approaches such as big-step SOS and denotational semantics, ~full nondeterminism~ is almost impossible in practice, but at least the ~choice nondeterminism~ should be handled properly.
+* Nondeterminism behavior is very important. The ability to search for all possible execution results is required. For some semantic approaches such as big-step SOS and denotational semantics, *full nondeterminism* is almost impossible in practice, but at least the *choice nondeterminism* should be handled properly.
 * We require two artifacts:
   1. Semantics implementation should pass all provided tests.
   2. An essay that describes and scores every semantic approach with explanation and justification.
