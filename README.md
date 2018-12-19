@@ -59,7 +59,7 @@ This project offers a comprehensive survey on the 10 most common-used approaches
 To fulfill the requirement, you should
 * pick an implementation language
 * pick a semantic style from either big-step or small-step SOS
-* implement the semantics of IMP++ directly.
+* implement the semantics of IMP++ directly, that is, you don't need to do it incrementally.  
 
 The following is a list of students who participate in the project. If you are taking the project but your name is not in the following list, please add it yourself.
 
