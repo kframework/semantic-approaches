@@ -149,6 +149,25 @@ type cfg =
   | HaltingCfg of state * buffer * buffer (* (state,inputs,outputs) *)
 ;;
 
+let rec in_cfg_list cfg cfglist =
+  match cfglist with
+  | [] -> false
+  | c::cs -> if cfg = c then true else in_cfg_list cfg cs
+;;
+
+(* Compute the union of two cfg sets, i.e., lists
+ * with no duplicates.
+ *)
+let rec union_cfg_list cfgset1 cfgset2 =
+  match cfgset1 with
+  | [] -> cfgset2
+  | c::cs -> 
+      if in_cfg_list c cfgset2 
+      then union_cfg_list cs cfgset2 
+      else c::(union_cfg_list cs cfgset2)
+;;
+
+
 
 (* Prettyprinting *)
 
@@ -159,7 +178,7 @@ let rec string_of_id_list xs = match xs with
 ;;
 
 let rec string_of_buffer buffer = match buffer with
-| [] -> ".Buffer"
+| [] -> "EmptyBuffer"
 | [n] -> string_of_int n
 | n::ns -> (string_of_int n) ^ "::" ^ (string_of_buffer ns)
 ;;
@@ -203,7 +222,7 @@ and string_of_stmt stmt = match stmt with
 ;;
 
 let rec string_of_state s = match s with
-| [] -> "emptystate"
+| [] -> "EmptyState"
 | [(x, n)] -> x ^ "|->" ^ (string_of_int n)
 | (x, n)::rest -> x ^ "|->" ^ (string_of_int n) ^ "," ^ (string_of_state rest)
 ;;
@@ -211,19 +230,23 @@ let rec string_of_state s = match s with
 
 let string_of_cfg cfg = match cfg with
 | AExpCfg (e, s, ins) -> 
-    "<" ^ (string_of_aexp e) ^ (string_of_state s) ^ (string_of_buffer ins) ^ ">"
+    "<" ^ (string_of_aexp e) ^ "," ^ (string_of_state s) 
+    ^ "," ^ (string_of_buffer ins) ^ ">"
 | BExpCfg (e, s, ins) -> 
     "<" ^ (string_of_bexp e) ^ (string_of_state s) ^ (string_of_buffer ins) ^ ">"
 | BlockCfg (block, s, ins) ->
     "<" ^ (string_of_block block) ^ (string_of_state s) ^ (string_of_buffer ins) ^ ">"
 | StmtCfg (stmt, s, ins) ->
-    "<" ^ (string_of_stmt stmt) ^ (string_of_state s) ^ (string_of_buffer ins) ^ ">"
+    "<" ^ (string_of_stmt stmt) ^ "," 
+    ^ (string_of_state s) ^ "," ^ (string_of_buffer ins) ^ ">"
 | IntCfg (n, s, ins) ->
-    "<" ^ (string_of_int n) ^ (string_of_state s) ^ (string_of_buffer ins) ^ ">"
+    "<" ^ (string_of_int n) ^ "," ^ (string_of_state s) ^
+    "," ^ (string_of_buffer ins) ^ ">"
 | BoolCfg (b, s, ins) ->
     "<" ^ (string_of_bool b) ^ (string_of_state s) ^ (string_of_buffer ins) ^ ">"
 | StateCfg (s, ins, outs) ->
-    "<" ^ (string_of_state s) ^ (string_of_buffer ins) ^ (string_of_buffer outs) ^ ">"
+    "<" ^ (string_of_state s) ^ "," 
+    ^ (string_of_buffer ins) ^ "," ^ (string_of_buffer outs) ^ ">"
 | ErrCfg (s, ins) ->
     "<" ^ "error" ^ "," ^ (string_of_state s) ^ "," ^ (string_of_buffer ins) ^ ">"
 | HaltingCfg (s, ins, outs) ->
@@ -282,7 +305,7 @@ let rec eval cfg = match cfg with
       in
       List.flatten (List.map eval_e1 (eval (AExpCfg (e2, s, ins))))
     in 
-    cfgs_e1_e2 @ cfgs_e2_e1
+    union_cfg_list cfgs_e1_e2 cfgs_e2_e1
 | AExpCfg (DivAExp (e1, e2), s, ins) ->
     let cfgs_e1_e2 = 
       let eval_e2 cfg_after_e1 = match cfg_after_e1 with
@@ -314,7 +337,7 @@ let rec eval cfg = match cfg with
       in
       List.flatten (List.map eval_e1 (eval (AExpCfg (e2, s, ins))))
     in 
-    cfgs_e1_e2 @ cfgs_e2_e1
+    union_cfg_list cfgs_e1_e2 cfgs_e2_e1
 | AExpCfg (IncAExp (x), s, ins) ->
     (match lookup_state s x with
     | Some (n) -> [IntCfg (n + 1, (update_state s (n + 1) x), ins)]
@@ -352,7 +375,7 @@ let rec eval cfg = match cfg with
       in
       List.flatten (List.map eval_e1 (eval (AExpCfg (e2, s, ins))))
     in 
-    cfgs_e1_e2 @ cfgs_e2_e1
+    union_cfg_list cfgs_e1_e2 cfgs_e2_e1
 | BExpCfg (NotBExp (e), s, ins) ->
     let construct_final_cfg cfg_after_e = match cfg_after_e with
     | ErrCfg (s1, ins1) -> ErrCfg (s1, ins1)

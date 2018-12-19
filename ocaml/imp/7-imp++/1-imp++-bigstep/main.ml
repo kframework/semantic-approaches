@@ -122,7 +122,7 @@ let pgm_sum_io =
 let test_sum_io () =
   let initial_state = [] in
   let stmt = pgm_sum_io in
-  let ins = [3] in
+  let ins = [100] in
   print_string "test_sum_io:\n";
   run stmt initial_state ins
 ;;
