@@ -1,22 +1,33 @@
 open Bigstep;;
 
+
+let eval_aexp aexp state ins =
+  let initial_cfg = AExpCfg (aexp, state, ins) in
+  let final_cfgs = eval initial_cfg in
+  print_cfg initial_cfg;
+  print_string "\n  ---evals to--->\n";
+  print_cfg_list final_cfgs;
+  print_string "\n\n"
+;;
+
 let run stmt state ins =
   let stmt_desugared = desugar stmt in
   let initial_cfg = StmtCfg (stmt_desugared, state, ins) in
-  let final_cfg = eval initial_cfg in
+  let final_cfgs = eval initial_cfg in
   print_string "original program:\n";
   print_stmt stmt;
   print_string "desugared program:\n";
   print_stmt stmt_desugared;
   print_cfg initial_cfg;
   print_string "\n  ---evals to--->\n";
-  print_cfg final_cfg;
+  print_cfg_list final_cfgs;
   print_string "\n\n"
 ;;
 
 
 (* Some shortcut functions for ASTs *)
 let aexp_plus e1 e2 = PlusAExp (e1, e2);;
+let aexp_div e1 e2 = DivAExp (e1, e2);;
 let bexp_not e = NotBExp (e);;
 let bexp_lessthan e1 e2 = LessThanBExp (e1, e2);;
 let stmt_assign x e = AssignStmt (x, e);;
@@ -43,6 +54,27 @@ let rec make_seqstmt stmts = match stmts with
 | stmt::rest_stmts -> SeqStmt (stmt, make_seqstmt rest_stmts)
 ;;
 
+
+
+(* ++x / ++x at state x |-> 0.
+ * Result A: 1 / 2 = 0
+ * Result B: 2 / 1 = 2
+ *)
+let test_nondet_1 () = 
+  let initial_state = [("x", 0)] in
+  let exp = aexp_div (IncAExp "x") (IncAExp "x") in
+  let ins = [] in
+  print_string "test_nondet_1:\n";
+  eval_aexp exp initial_state ins
+;;
+
+let test_nondet_2 () = 
+  let initial_state = [("x", 0)] in
+  let exp = aexp_plus (IdAExp "x") (IdAExp "x") in
+  let ins = [] in
+  print_string "test_nondet_2:\n";
+  eval_aexp exp initial_state ins
+;;
 
 (* Tests programs *)
 
@@ -90,7 +122,7 @@ let pgm_sum_io =
 let test_sum_io () =
   let initial_state = [] in
   let stmt = pgm_sum_io in
-  let ins = [100] in
+  let ins = [3] in
   print_string "test_sum_io:\n";
   run stmt initial_state ins
 ;;
@@ -154,6 +186,8 @@ let main () =
   print_string "---       Xiaohong Chen           ---\n\n";
   test_sum_io ();
   test_let_read_print ();
+  test_nondet_1 (); 
+  test_nondet_2 ();
   print_string "\n---         Bye bye               ---\n";
 ;;
 

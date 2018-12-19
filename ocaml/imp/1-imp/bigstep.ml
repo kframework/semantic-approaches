@@ -235,19 +235,29 @@ let print_stmt stmt = print_string ((string_of_stmt stmt) ^ "\n");;
 let print_cfg cfg = print_string ((string_of_cfg cfg) ^ "\n");;
 
 
+exception EvalError of cfg * string
+exception SimpleEvalError
 
-(* Big-Step Evaluation Function *)
+
+(* Big-Step Evaluation Function - Choice Nondeterminism *)
 
 let rec eval cfg = match cfg with
 (* Evaluate expressions *)
-| AExpCfg (IntAExp (n), s, ins) -> IntCfg (n, s, ins)
+| AExpCfg (IntAExp (n), s, ins) -> [IntCfg (n, s, ins)]
 | AExpCfg (IdAExp (x), s, ins) -> 
     (match lookup_state s x with
-    | Some (n) -> IntCfg (n, s, ins)
-    | None -> cfg
+    | Some (n) -> [IntCfg (n, s, ins)]
+    | None -> raise SimpleEvalError
     )
 | AExpCfg (PlusAExp (e1, e2), s, ins) ->
-    (* May lose nondeterministic behavior. *)
+    let eval_e2 cfg_after_e1 = match cfg_after_e1 with
+    | ErrCfg (s1, ins1) -> [ErrCfg (s1, ins1)]
+    | IntCfg (n1, s1, ins1) -> 
+        (match eval (AExpCfg (e2, s1, ins1)) with
+        | ErrCfg (s2, ins2)
+    List.map f (eval (AExpCfg (e1, s, ins)))
+
+(*
     (match eval (AExpCfg (e1, s, ins)) with
     | ErrCfg (s1, ins1) -> ErrCfg (s1, ins1)
     | IntCfg (n1, s1, ins1) ->
@@ -377,3 +387,5 @@ let rec eval cfg = match cfg with
     )
 | _ -> cfg (* unreachable *)
 ;;
+
+*)
