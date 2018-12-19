@@ -492,26 +492,3 @@ let rec eval cfg = match cfg with
     List.flatten (List.map eval_stmt (eval (AExpCfg (e, s, ins))))
 | _ -> raise SimpleEvalError
 ;;
-
-(*
-
-| StmtCfg(LetStmt (x, e, stmt), s, ins) ->
-    (* In practice, e will only be IntAExp (0). *)
-    (match eval (AExpCfg (e, s, ins)) with
-    | ErrCfg (s1, ins1) -> StateCfg (s1, ins1, []) (* unreachable *)
-    | IntCfg (n, s1, ins1) -> let s1_upd = update_state s1 n x in
-        (match eval (StmtCfg (stmt, s1_upd, ins1)) with
-        | HaltingCfg (s2, ins2, outs2) ->
-            let s2_restore = lookup_and_update_state s2 s1 x in
-            StateCfg (s2_restore, ins2, outs2)
-        | StateCfg (s2, ins2, outs2) ->
-            let s2_restore = lookup_and_update_state s2 s1 x in
-            StateCfg (s2_restore, ins2, outs2)
-        | err_cfg -> print_string "unexpected case let:\n"; print_cfg err_cfg ; cfg
-        )
-    | _ -> cfg
-    )
-| _ -> cfg (* unreachable *)
-;;
-
-*)
