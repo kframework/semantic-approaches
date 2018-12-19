@@ -191,5 +191,22 @@ let main () =
   print_string "\n---         Bye bye               ---\n";
 ;;
 
-let () = main ()
+(* Tests *)
+
+exception ParseError
+
+let path_of_dtest_1 = "../../../../tests/imp/7-imp++/deterministic_test_1.imp";;
+
+let parse () =
+  try
+    let inx = open_in path_of_dtest_1 in
+    let lexbuf = Lexing.from_channel inx in
+    while true do
+      let result = Parser.main Lexer.token lexbuf in
+        print_stmt result; flush stdout
+    done
+  with _ -> raise ParseError
+;;
+
+let () = main (); parse ()
 ;;

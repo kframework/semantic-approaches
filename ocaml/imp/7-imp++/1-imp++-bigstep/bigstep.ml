@@ -204,7 +204,7 @@ let rec string_of_block b = match b with
 | StmtBlock (stmt) -> "{" ^ (string_of_stmt stmt) ^ "}"
 and string_of_stmt stmt = match stmt with
 | BlockStmt (b) -> (string_of_block b)
-| AssignStmt (x, e) -> x ^ ":=" ^ (string_of_aexp e) ^ ";"
+| AssignStmt (x, e) -> x ^ "=" ^ (string_of_aexp e) ^ ";"
 | SeqStmt (s1, s2) -> "(" ^ (string_of_stmt s1) ^ ")" 
     ^ " " ^ "(" ^ (string_of_stmt s2) ^ ")"
 | IfStmt (cond, b1, b2) -> 

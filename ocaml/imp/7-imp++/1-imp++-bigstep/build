@@ -1,2 +1,9 @@
-ocamlopt -o main bigstep.ml main.ml
-rm *.cmi *.o *.cmx
+ocamlc -c bigstep.ml
+ocamllex lexer.mll
+ocamlyacc parser.mly
+ocamlc -c parser.mli
+ocamlc -c lexer.ml
+ocamlc -c parser.ml
+ocamlc -c main.ml
+ocamlc -o main lexer.cmo parser.cmo bigstep.cmo main.cmo
+rm -f *.cmi *.o *.cmx *.cmo
