@@ -1,0 +1,7 @@
+int i, s, n;
+n = read();
+while (i <= n) {
+  s = s + ++i;
+}
+print(s);
+
