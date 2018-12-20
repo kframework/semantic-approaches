@@ -20,7 +20,7 @@ open Bigstep
 
 %%
 main:
-| stmt EOF { $1 }
+| stmt_sequence { $1 }
 ;
 
 stmt:
@@ -34,17 +34,18 @@ stmt:
 ;
 
 compound_stmt:
-| LCBRCT RCBRCT { BlockStmt }
-| LCBRCT stmt_sequence RCBRCT
-
-block:
-| LCBRCT block_cnt { $2 }
+| LCBRCT RCBRCT { BlockStmt (EmptyBlock) }
+| LCBRCT stmt_sequence RCBRCT { BlockStmt (StmtBlock ($2)) }
+;
+stmt_sequence:
+| stmt { $1 }
+| stmt_sequence stmt { SeqStmt ($1, $2) }
 ;
 
-block_cnt:
-| RCBRCT { EmptyBlock }
-| stmt LCBRCT { StmtBlock ($1) }
-
+block:
+| LCBRCT RCBRCT { EmptyBlock }
+| LCBRCT stmt_sequence RCBRCT { StmtBlock ($2) }
+;
 
 aexp:
 | INT { IntAExp ($1) }

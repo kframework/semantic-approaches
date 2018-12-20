@@ -1,6 +1,5 @@
 open Bigstep;;
 
-
 let eval_aexp aexp state ins =
   let initial_cfg = AExpCfg (aexp, state, ins) in
   let final_cfgs = eval initial_cfg in
@@ -23,6 +22,42 @@ let run stmt state ins =
   print_cfg_list final_cfgs;
   print_string "\n\n"
 ;;
+
+
+
+(* Parsing and testing *)
+
+let parse_stmt file =
+  let inx = open_in file in
+  let lexbuf = Lexing.from_channel inx in
+    Parser.main Lexer.token lexbuf
+;;
+
+(* Read a list of integers from a file
+ * with each integer in a line.
+ *)
+let read_int_list file =
+  let ins = ref [] in
+  let inx = open_in file in
+  try
+    while true; do
+      ins := (int_of_string (input_line inx)) :: !ins
+    done; !ins
+  with End_of_file -> 
+  close_in inx;
+  List.rev !ins
+;;
+
+let run_dtest dtest =
+  let dtest_in = dtest ^ ".in" in
+  let dtest_out = dtest ^ ".out" in
+  let ins = read_int_list dtest_in in
+  let outs = read_int_list dtest_out in
+  let stmt = parse_stmt dtest in
+  run stmt [] ins
+;;
+
+
 
 
 (* Some shortcut functions for ASTs *)
@@ -130,55 +165,7 @@ let test_sum_io () =
 
 
 
-(*
-let test_sum_10 () =
-  let initial_state = [("n",0);("s",0)] in
-  let stmt =
-    make_seqstmt [
-      (stmt_assign_n 10);
-      (stmt_assign_s 0);
-      (stmt_while (bexp_not (bexp_lessthan_n 1))
-        (block_stmt
-          (make_seqstmt [
-            (stmt_assign "s" aexp_plus_s_n);
-            (stmt_assign "n" aexp_minus_n_1)])))] in
-  let ins = [] in
-  print_string "test_sum_10:\n";
-  run stmt initial_state ins
-;;
 
-let test_sum_100 () =
-  let initial_state = [("n",0);("s",0)] in
-  let stmt =
-    make_seqstmt [
-      (stmt_assign_n 100);
-      (stmt_assign_s 0);
-      (stmt_while (bexp_not (bexp_lessthan_n 1))
-        (block_stmt
-          (make_seqstmt [
-            (stmt_assign "s" aexp_plus_s_n);
-            (stmt_assign "n" aexp_minus_n_1)])))] in
-  let ins = [] in
-  print_string "test_sum_100:\n";
-  run stmt initial_state ins
-;;
-
-let test_sum_1000 () =
-  let initial_state = [("n",0);("s",0)] in
-  let stmt =
-    make_seqstmt [
-      (stmt_assign_n 1000);
-      (stmt_assign_s 0);
-      (stmt_while (bexp_not (bexp_lessthan_n 1))
-        (block_stmt
-          (make_seqstmt [
-            (stmt_assign "s" aexp_plus_s_n);
-            (stmt_assign "n" aexp_minus_n_1)])))] in
-  let ins = [] in
-  print_string "test_sum_1000:\n";
-  run stmt initial_state ins
-;;
-*)
 
 
 let main () =
@@ -193,20 +180,11 @@ let main () =
 
 (* Tests *)
 
-exception ParseError
 
-let path_of_dtest_1 = "../../../../tests/imp/7-imp++/deterministic_test_1.imp";;
+let dtest_1 = "../../../../tests/imp/7-imp++/deterministic/dtest_1.imp";;
+let ptest_1 = "ptest_1.imp"
 
-let parse () =
-  try
-    let inx = open_in path_of_dtest_1 in
-    let lexbuf = Lexing.from_channel inx in
-    while true do
-      let result = Parser.main Lexer.token lexbuf in
-        print_stmt result; flush stdout
-    done
-  with _ -> raise ParseError
-;;
 
-let () = main (); parse ()
+
+let () = run_dtest dtest_1
 ;;
