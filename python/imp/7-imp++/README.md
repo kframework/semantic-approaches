@@ -1,0 +1,1 @@
+1. Because type is not that clear for python. So it is hard to constrain the type of the input to each class.
