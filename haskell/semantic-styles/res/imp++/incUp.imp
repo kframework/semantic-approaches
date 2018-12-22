@@ -1,0 +1,8 @@
+int n, c, s ;
+n = read() ;
+n = n / 2 ;
+spawn { s = ++c ; }
+c = n + 1 ;
+s = ++c ;
+n = n + s ;
+print ( n ) ;

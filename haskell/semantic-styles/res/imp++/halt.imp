@@ -1,0 +1,5 @@
+int n ;
+spawn { n = ++n / ++n ; }
+print ( n ) ;
+halt ;
+print(42);

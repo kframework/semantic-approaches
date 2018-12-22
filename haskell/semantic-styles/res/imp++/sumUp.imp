@@ -1,0 +1,1 @@
+int n, m ; n = read() ; m = n / 2 ; spawn {  int c, s ;  while( c <= m ) {    s = ++c ;  }  m = m + s ; } spawn {  int c, s ; c = m + 1 ; while( c <= n ) { s = ++c ; } m = m + s ; } print ( m ) ;
