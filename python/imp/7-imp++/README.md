@@ -21,3 +21,4 @@ This directory contains implementations of IMP++, with 5 features added using bi
 - Implement the semantic of 'join'.
 - Implement parser.
 - Refine the testing (now checking manually, without writing down the oracle).
+- Better way of doing deep copy on state. 
