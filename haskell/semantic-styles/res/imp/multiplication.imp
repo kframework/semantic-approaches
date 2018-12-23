@@ -1,0 +1,10 @@
+int q, r, x, y, z;
+x = 33 ;
+y = 11 ;
+while (!(x <= 0)) {
+  q = x / 2 ;
+  r = q + q + 1 ;
+  if (r <= x) { z = z + y ; } else {}
+  x = q ;
+  y = y + y ;
+}
